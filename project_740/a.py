@@ -63,7 +63,7 @@ def get_data():
     return jsonify(result)
 
 
-@app.route('/get_marketCap_Over_1T')
+@app.route('/get_marketCap_over_1T')
 def get_marketCap_Over_1T():
     #marketCap > 1T http://127.0.0.1:5000/get_marketCap_Over_1T
     db = getDB()
@@ -99,7 +99,7 @@ def get_pricing_history_highest_open():
     result = [
         {"symbol": sm["symbol"], "companyName": sm["companyName"], "sector": sm["sector"], "industry": sm["industry"],
          "country": sm["country"], "currency": sm["currency"]
-            , "marketCap": sf["marketCap"], "sharesOutstanding": sf["sharesOutstanding"],
+            , "marketCap": sf["marketCap"], "sharesOutstanding": sf["sharesOutstanding"],"totalRevenue":sf["totalRevenue"],
           "priceToBook": sd["priceToBook"]
          ,"maxOpenHigh":sh["maxOpenHigh"],"maxOpenDate":sh["Date"],"maxOpenVolume":sh["Volume"]
          }
@@ -108,6 +108,32 @@ def get_pricing_history_highest_open():
         for sd in stock_default_key_stats
         for sh in stock_history_data
         if sm["symbol"] == sf["symbol"] and sm["symbol"] == sd["symbol"] and sm["symbol"]==sh["_id"]
+    ]
+    return jsonify(result)
+
+@app.route('/get_all_pricing_history')
+def get_all_pricing_history():
+    db=getDB()
+    '''
+    max high open, aggregate query , group by then combine with metadata , financial info, default stats for more data
+    '''
+    stock_history_data =[sh for sh in db["stock_history_data"].find({},{"_id":0}).sort({"High":-1,"Date":-1,"symbol":1,"High":-1})]
+    #  db.stock_history_data.aggregate([{$group:{_id:"$symbol",maxOpenHigh:{$max:"$Open"},Date:{$max:"$Date"},Volume:{$max:"$Volume"}}}])
+    stock_metadata = [s for s in db["stock_metadata"].find({"symbol":{"$in":["GOOGL", "GOOG", "AMZN", "AAPL", "META", "MSFT", "NVDA", "TSLA"]}}, {"_id": 0})]
+    stock_financial_info = [s for s in db["stock_financial_info"].find({"symbol":{"$in":["GOOGL", "GOOG", "AMZN", "AAPL", "META", "MSFT", "NVDA", "TSLA"]}}, {"_id": 0})]
+    stock_default_key_stats = [s for s in db["stock_default_key_stats"].find({"symbol":{"$in":["GOOGL", "GOOG", "AMZN", "AAPL", "META", "MSFT", "NVDA", "TSLA"]}}, {"_id": 0})]
+    result = [
+        {"symbol": sm["symbol"], "companyName": sm["companyName"], "sector": sm["sector"], "industry": sm["industry"],
+         "country": sm["country"], "currency": sm["currency"]
+            , "marketCap": sf["marketCap"], "sharesOutstanding": sf["sharesOutstanding"],
+          "priceToBook": sd["priceToBook"]
+          ,"Date":sh["Date"], "Open":sh["Open"] ,"High":sh["High"],"Low":sh["Low"],"Close":sh["Close"],"Volume":sh["Volume"]
+         }
+        for sm in stock_metadata
+        for sf in stock_financial_info
+        for sd in stock_default_key_stats
+        for sh in stock_history_data
+        if sm["symbol"] == sf["symbol"] and sm["symbol"] == sd["symbol"] and sm["symbol"]==sh["symbol"]
     ]
     return jsonify(result)
 
@@ -197,7 +223,7 @@ def load_ticker_history():
     for tickerSymbol in list_symbols:
         tickerData = yf.Ticker(tickerSymbol)
         # tickerDf = tickerData.history(period='1d', start='2021-1-1', end='2024-5-1')
-        tickerDf = tickerData.history(period='1d', start='2021-1-1', end='2024-5-1')
+        tickerDf = tickerData.history(period='1d', start='2023-1-1', end='2024-5-1')
         data_dict = tickerDf.reset_index().to_dict("records")
         for d in data_dict:
             d['symbol'] = tickerSymbol

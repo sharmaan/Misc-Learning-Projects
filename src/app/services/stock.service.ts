@@ -23,4 +23,16 @@ export class StockService {
   deleteFinanceData(symbol: string): Observable<any> {
     return this._http.delete(`http://localhost:5000/deleteData/${symbol}`);
   }
+
+  getFinanceOver1T(): Observable<any> {
+    return this._http.get('http://127.0.0.1:5000/get_marketCap_over_1T');
+  }
+  getHighestOpenPricingHistory(): Observable<any> {
+    return this._http.get(
+      'http://127.0.0.1:5000/get_pricing_history_highest_open'
+    );
+  }
+  getAllPricingHistory(): Observable<any> {
+    return this._http.get('http://127.0.0.1:5000/get_all_pricing_history');
+  }
 }

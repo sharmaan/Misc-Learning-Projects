@@ -6,6 +6,9 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { CoreService } from './core/core.service';
+import { StockInfoComponent } from './stock-info/stock-info.component';
+import { StockPriceComponent } from './stock-price/stock-price.component';
+import { StockPriceAllComponent } from './stock-price-all/stock-price-all.component';
 
 @Component({
   selector: 'app-root',
@@ -66,6 +69,31 @@ export class AppComponent implements OnInit {
         this.dataSource = new MatTableDataSource(res);
         this.dataSource.sort = this.sort;
         this.dataSource.paginator = this.paginator;
+      },
+      error: console.log,
+    });
+  }
+  getFinanceOver1T() {
+    this._stockService.getFinanceOver1T().subscribe({
+      next: (res) => {
+        // console.log(res);
+        this._dialog.open(StockInfoComponent);
+      },
+      error: console.log,
+    });
+  }
+  getHighestOpenPricingHistory() {
+    this._stockService.getHighestOpenPricingHistory().subscribe({
+      next: (res) => {
+        this._dialog.open(StockPriceComponent);
+      },
+      error: console.log,
+    });
+  }
+  getAllPricingHistory() {
+    this._stockService.getAllPricingHistory().subscribe({
+      next: (res) => {
+        this._dialog.open(StockPriceAllComponent);
       },
       error: console.log,
     });

@@ -3,6 +3,12 @@
   <span class="example-spacer"></span>
   <button mat-raised-button (click)="openAddEditFinanceForm()">ADD STOCK DATA</button>
 </mat-toolbar>
+<button mat-button [matMenuTriggerFor]="menu">Actions</button>
+<mat-menu #menu="matMenu">
+  <button mat-menu-item (click)="getFinanceOver1T()">Marketcap Over $1 Trillion </button>
+  <button mat-menu-item (click)="getHighestOpenPricingHistory()">Highest Open Pricing History</button>
+  <button mat-menu-item (click)="getAllPricingHistory()">Pricing History</button>
+</mat-menu>
 
 <div class="main-body">
 

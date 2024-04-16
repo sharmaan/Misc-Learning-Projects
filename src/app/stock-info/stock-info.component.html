@@ -1,0 +1,74 @@
+<div class="mat-elevation-z8">
+
+  <table mat-table [dataSource]="dataSource" matSort (matSortChange)="announceSortChange($event)"
+    class="mat-elevation-z8">
+
+
+    <ng-container matColumnDef="symbol">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by Trading Symbol">
+        Trading Symbol
+      </th>
+      <td mat-cell *matCellDef="let element"> {{element.symbol}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="companyName">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by companyName">
+        Company Name
+      </th>
+      <td mat-cell *matCellDef="let element"> {{element.companyName}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="sector">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by sector">
+        Sector
+      </th>
+      <td mat-cell *matCellDef="let element"> {{element.sector}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="industry">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by industry">
+        Industry
+      </th>
+      <td mat-cell *matCellDef="let element"> {{element.industry}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="country">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by country">
+        Country
+      </th>
+      <td mat-cell *matCellDef="let element"> {{element.country}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="currentPrice">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by current price">
+        Current Price
+      </th>
+      <td mat-cell *matCellDef="let element"> {{element.currentPrice}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="marketCap">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by marketCap">
+        Market Capitalization
+      </th>
+      <td mat-cell *matCellDef="let element"> {{element.marketCap|currency}} </td>
+    </ng-container>
+
+    <ng-container matColumnDef="sharesOutstanding">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by sharesOutstanding">
+        Shares Outstanding
+      </th>
+      <td mat-cell *matCellDef="let element"> {{element.sharesOutstanding}} </td>
+    </ng-container>
+    <ng-container matColumnDef="totalRevenue">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by totalRevenue">
+        Revenue
+      </th>
+      <td mat-cell *matCellDef="let element"> {{element.totalRevenue}} </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+  <mat-paginator [pageSize]="10" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons aria-label="Select page of items">
+  </mat-paginator>
+</div>

@@ -20,9 +20,13 @@ import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatMenuModule } from '@angular/material/menu';
+import { StockInfoComponent } from './stock-info/stock-info.component';
+import { StockPriceComponent } from './stock-price/stock-price.component';
+import { StockPriceAllComponent } from './stock-price-all/stock-price-all.component';
 
 @NgModule({
-  declarations: [AppComponent, StockAddEditComponent],
+  declarations: [AppComponent, StockAddEditComponent, StockInfoComponent, StockPriceComponent, StockPriceAllComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -43,6 +47,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
     MatPaginatorModule,
     MatSortModule,
     MatSnackBarModule,
+    MatMenuModule,
   ],
   providers: [],
   bootstrap: [AppComponent],
