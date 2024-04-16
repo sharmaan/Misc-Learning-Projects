@@ -46,6 +46,11 @@ def get_data():
     stock_metadata = [s for s in db["stock_metadata"].find({}, {"_id": 0})]
     stock_financial_info = [s for s in db["stock_financial_info"].find({}, {"_id": 0})]
     stock_default_key_stats = [s for s in db["stock_default_key_stats"].find({}, {"_id": 0})]
+
+    stock_metadata_selected = [s for s in db["stock_metadata"].find({"symbol":{"$in":["GOOGL","GOOG","AMZN","AAPL","META","MSFT","NVDA"]}}, {"_id": 0})]
+    stock_financial_info_selected = [s for s in db["stock_financial_info"].find({"symbol":{"$in":["GOOGL","GOOG","AMZN","AAPL","META","MSFT","NVDA"]}}, {"_id": 0})]
+    stock_default_key_stats_selected = [s for s in db["stock_default_key_stats"].find({"symbol":{"$in":["GOOGL","GOOG","AMZN","AAPL","META","MSFT","NVDA"]}}, {"_id": 0})]
+
     result = [
         {"symbol": sm["symbol"], "companyName": sm["companyName"], "sector": sm["sector"], "industry": sm["industry"],
          "country": sm["country"], "currency": sm["currency"]
@@ -185,7 +190,7 @@ def url_variables(name: str, age: int):
 
 def getDB():
     client = MongoClient('mongodb://localhost:27017/')
-    db = client['finance_db']
+    db = client['finance_db_infs740']
     return db
 
 
@@ -196,11 +201,11 @@ def load_ticker_history():
     db = getDB()
     collection = db['stock_history_data']
     collection.delete_many({})
-    list_symbols = ['AAPL', 'MSFT']
+    list_symbols = ["GOOGL", "GOOG", "AMZN", "AAPL", "META", "MSFT", "NVDA", "TSLA"]
     for tickerSymbol in list_symbols:
         tickerData = yf.Ticker(tickerSymbol)
-        # tickerDf = tickerData.history(period='1d', start='2020-1-1', end='2023-1-1')
-        tickerDf = tickerData.history(period='1d', start='2023-1-1')
+        # tickerDf = tickerData.history(period='1d', start='2021-1-1', end='2024-5-1')
+        tickerDf = tickerData.history(period='1d', start='2021-1-1', end='2024-5-1')
         data_dict = tickerDf.reset_index().to_dict("records")
         for d in data_dict:
             d['symbol'] = tickerSymbol
@@ -210,13 +215,6 @@ def load_ticker_history():
 
 
 def load_ticker_data():
-    # Fetch metadata from Yahoo Finance
-    # ticker_symbol = "AAPL"
-    # ticker = yf.Ticker(ticker_symbol)
-    # metadata = ticker.info
-    # print(f"metadata {metadata}")
-    # selected_metadata = get_selected_metadata()
-
     db = getDB()
     stock_metadata = db['stock_metadata']
     stock_financial_info = db['stock_financial_info']
@@ -226,12 +224,18 @@ def load_ticker_data():
     stock_financial_info.delete_many({})
     stock_default_key_stats.delete_many({})
     # Insert into MongoDB
-    # result = collection.insert_one(selected_metadata)
-    # list_ticker_symbol = ['AAPL', 'MSFT']
     tables = pd.read_html("https://en.wikipedia.org/wiki/List_of_S%26P_500_companies")
-    # tables = pd.read_html("https://en.wikipedia.org/wiki/Nasdaq-100")
     sp500 = tables[0]['Symbol'].tolist()
     list_ticker_symbol = [symbol.replace(".", "-") for symbol in sp500]
+    N=100
+    list1 = list_ticker_symbol[:N]
+    list2 = ["GOOGL", "GOOG", "AMZN", "AAPL", "META", "MSFT", "NVDA", "TSLA"]
+    result = list1 + [data for data in list2 if data not in list1]
+    result.sort()
+    print(list1)
+    print(list2)
+    print(result)
+
     for ticker_symbol in list_ticker_symbol:
         ticker = yf.Ticker(ticker_symbol)
         metadata = ticker.info
@@ -428,7 +432,7 @@ if __name__ == '__main__':
     # load_ticker_calender_events()
     # load_ticker_key_stats()
     # pass
-    app.run(debug=True)
+    # app.run(debug=True)
     # check()
     # Compare downloads for all companies within the S&P500
     # sp500_historical_pricing()
@@ -440,8 +444,23 @@ if __name__ == '__main__':
     # sp500 = tables[0]['Symbol'].tolist()
     # list_ticker_symbol = [symbol.replace(".", "-") for symbol in sp500]
     # print(list_ticker_symbol)
-    # N=250
+    # N=5
+    # list1 = list_ticker_symbol[:N]
     # l1 = sorted(list_ticker_symbol,key=lambda x:x[0],reverse=False)[:N]
-    # print(l1)
+    # print(f"The first {N} elements from list are: \n")
+    # list1 =['MMM', 'AOS', 'ABT', 'ABBV', 'ACN',"GOOG","AMZN","AAPL"]
+    # list2 = ["GOOGL","GOOG","AMZN","AAPL","META","MSFT","NVDA","TSLA"]
+    # set1 = set(list1)
+    # set2 = set(list2)
+    # result = list(set1.union(set2))
+    # result.sort()
+    # print(list1)
+    # print(list2)
+    # print(result)
+    # result = list1+[data for data in list2 if data not in list1]
+    # result.sort()
+    # print(result)
+
+
 
 
