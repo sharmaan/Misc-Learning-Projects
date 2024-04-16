@@ -46,11 +46,6 @@ def get_data():
     stock_metadata = [s for s in db["stock_metadata"].find({}, {"_id": 0})]
     stock_financial_info = [s for s in db["stock_financial_info"].find({}, {"_id": 0})]
     stock_default_key_stats = [s for s in db["stock_default_key_stats"].find({}, {"_id": 0})]
-
-    stock_metadata_selected = [s for s in db["stock_metadata"].find({"symbol":{"$in":["GOOGL","GOOG","AMZN","AAPL","META","MSFT","NVDA"]}}, {"_id": 0})]
-    stock_financial_info_selected = [s for s in db["stock_financial_info"].find({"symbol":{"$in":["GOOGL","GOOG","AMZN","AAPL","META","MSFT","NVDA"]}}, {"_id": 0})]
-    stock_default_key_stats_selected = [s for s in db["stock_default_key_stats"].find({"symbol":{"$in":["GOOGL","GOOG","AMZN","AAPL","META","MSFT","NVDA"]}}, {"_id": 0})]
-
     result = [
         {"symbol": sm["symbol"], "companyName": sm["companyName"], "sector": sm["sector"], "industry": sm["industry"],
          "country": sm["country"], "currency": sm["currency"]
@@ -60,9 +55,9 @@ def get_data():
          "priceToBook": sd["priceToBook"]
          }
         for sm in stock_metadata
-        for sf in stock_financial_info
-        for sd in stock_default_key_stats
-        if sm["symbol"] == sf["symbol"] and sm["symbol"] == sd["symbol"]
+        for sf in stock_financial_info if sm["symbol"] == sf["symbol"]
+        for sd in stock_default_key_stats if sm["symbol"] == sd["symbol"]
+        # if sm["symbol"] == sf["symbol"] and sm["symbol"] == sd["symbol"]
     ]
 
     return jsonify(result)
@@ -98,9 +93,9 @@ def get_pricing_history_highest_open():
     '''
     stock_history_data =[sh for sh in db["stock_history_data"].aggregate([{"$group":{"_id":"$symbol","maxOpenHigh":{"$max":"$Open"},"Date":{"$max":"$Date"},"Volume":{"$max":"$Volume"}}}])]
     #  db.stock_history_data.aggregate([{$group:{_id:"$symbol",maxOpenHigh:{$max:"$Open"},Date:{$max:"$Date"},Volume:{$max:"$Volume"}}}])
-    stock_metadata = [s for s in db["stock_metadata"].find({"symbol":{"$in":["AAPL","MSFT"]}}, {"_id": 0})]
-    stock_financial_info = [s for s in db["stock_financial_info"].find({"symbol":{"$in":["AAPL","MSFT"]}}, {"_id": 0})]
-    stock_default_key_stats = [s for s in db["stock_default_key_stats"].find({"symbol":{"$in":["AAPL","MSFT"]}}, {"_id": 0})]
+    stock_metadata = [s for s in db["stock_metadata"].find({"symbol":{"$in":["GOOGL", "GOOG", "AMZN", "AAPL", "META", "MSFT", "NVDA", "TSLA"]}}, {"_id": 0})]
+    stock_financial_info = [s for s in db["stock_financial_info"].find({"symbol":{"$in":["GOOGL", "GOOG", "AMZN", "AAPL", "META", "MSFT", "NVDA", "TSLA"]}}, {"_id": 0})]
+    stock_default_key_stats = [s for s in db["stock_default_key_stats"].find({"symbol":{"$in":["GOOGL", "GOOG", "AMZN", "AAPL", "META", "MSFT", "NVDA", "TSLA"]}}, {"_id": 0})]
     result = [
         {"symbol": sm["symbol"], "companyName": sm["companyName"], "sector": sm["sector"], "industry": sm["industry"],
          "country": sm["country"], "currency": sm["currency"]
@@ -224,7 +219,7 @@ def load_ticker_data():
     tables = pd.read_html("https://en.wikipedia.org/wiki/List_of_S%26P_500_companies")
     sp500 = tables[0]['Symbol'].tolist()
     list_ticker_symbol = [symbol.replace(".", "-") for symbol in sp500]
-    N=100
+    N=50
     list1 = list_ticker_symbol[:N]
     list2 = ["GOOGL", "GOOG", "AMZN", "AAPL", "META", "MSFT", "NVDA", "TSLA"]
     result = list1 + [data for data in list2 if data not in list1]
@@ -424,11 +419,7 @@ def get_date_from_timestamp():
 
 
 if __name__ == '__main__':
-    # load_ticker_data()
+     # load_ticker_data()
     # load_ticker_history()
     # pass
     app.run(debug=True)
-
-
-
-
