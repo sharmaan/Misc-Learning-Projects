@@ -195,9 +195,6 @@ def getDB():
 
 
 def load_ticker_history():
-    # Insert data
-    # data_dict = tickerDf.reset_index().to_dict("records")
-    # collection.insert_many(data_dict)
     db = getDB()
     collection = db['stock_history_data']
     collection.delete_many({})
@@ -427,39 +424,10 @@ def get_date_from_timestamp():
 
 
 if __name__ == '__main__':
-    # load_ticker_history()
-    # load_ticker_metadata()
-    # load_ticker_calender_events()
-    # load_ticker_key_stats()
-    # pass
-    # app.run(debug=True)
-    # check()
-    # Compare downloads for all companies within the S&P500
-    # sp500_historical_pricing()
-    # check()
-    # get_date_from_timestamp()
-    # load_ticker_history()
     # load_ticker_data()
-    # tables = pd.read_html("https://en.wikipedia.org/wiki/List_of_S%26P_500_companies")
-    # sp500 = tables[0]['Symbol'].tolist()
-    # list_ticker_symbol = [symbol.replace(".", "-") for symbol in sp500]
-    # print(list_ticker_symbol)
-    # N=5
-    # list1 = list_ticker_symbol[:N]
-    # l1 = sorted(list_ticker_symbol,key=lambda x:x[0],reverse=False)[:N]
-    # print(f"The first {N} elements from list are: \n")
-    # list1 =['MMM', 'AOS', 'ABT', 'ABBV', 'ACN',"GOOG","AMZN","AAPL"]
-    # list2 = ["GOOGL","GOOG","AMZN","AAPL","META","MSFT","NVDA","TSLA"]
-    # set1 = set(list1)
-    # set2 = set(list2)
-    # result = list(set1.union(set2))
-    # result.sort()
-    # print(list1)
-    # print(list2)
-    # print(result)
-    # result = list1+[data for data in list2 if data not in list1]
-    # result.sort()
-    # print(result)
+    # load_ticker_history()
+    # pass
+    app.run(debug=True)
 
 
 
