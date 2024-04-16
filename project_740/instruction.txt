@@ -1,0 +1,2 @@
+#add py -m before pip to install (VS code)
+py -m pip install Flask-PyMongo
