@@ -138,6 +138,22 @@ def get_all_pricing_history():
     ]
     return jsonify(result)
 
+@app.route('/get_data_to_visualize')
+def getDataToDisplay():
+  db=getDB()
+  stock_history_data = [sh for sh in db["stock_history_data"].aggregate([{"$group": {"_id": "$symbol", "maxOpenHigh": {"$max": "$High"}}}])]
+  result = [{"symbol":d["_id"],"High":format(d["maxOpenHigh"],".2f") } for d in stock_history_data]
+  return jsonify(result)
+
+
+@app.route('/get_data_to_visualize_scatter')
+def getDataToDisplay_Scatter():
+  db=getDB()
+  stock_history_data = [sh for sh in db["stock_history_data"].aggregate([{"$group": {"_id": "$symbol", "maxOpenHigh": {"$max": "$High"}}}])]
+  result = [{"symbol":d["_id"],"High":format(d["maxOpenHigh"],".2f") } for d in stock_history_data]
+  return jsonify(result)
+
+
 @app.route('/getData/<string:symbol>')
 def get_data_by_trading_symbol(symbol: str):
     items = getDB()["test1"].find({"symbol": symbol}, {"_id": 0})

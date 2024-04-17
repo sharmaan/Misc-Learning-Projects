@@ -9,6 +9,10 @@ import { CoreService } from './core/core.service';
 import { StockInfoComponent } from './stock-info/stock-info.component';
 import { StockPriceComponent } from './stock-price/stock-price.component';
 import { StockPriceAllComponent } from './stock-price-all/stock-price-all.component';
+import { VisualComponent } from './visual/visual.component';
+import { BarComponent } from './bar/bar.component';
+import { PieComponent } from './pie/pie.component';
+import { ScatterComponent } from './scatter/scatter.component';
 
 @Component({
   selector: 'app-root',
@@ -130,5 +134,15 @@ export class AppComponent implements OnInit {
         }
       },
     });
+  }
+  displayBarChart() {
+    // this._dialog.open(VisualComponent);
+    this._dialog.open(BarComponent);
+  }
+  displayPieChart() {
+    this._dialog.open(PieComponent);
+  }
+  displayScatterPlot() {
+    this._dialog.open(ScatterComponent);
   }
 }

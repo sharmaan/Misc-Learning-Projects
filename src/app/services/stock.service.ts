@@ -35,4 +35,7 @@ export class StockService {
   getAllPricingHistory(): Observable<any> {
     return this._http.get('http://127.0.0.1:5000/get_all_pricing_history');
   }
+  getDataToVisualize(): Observable<any> {
+    return this._http.get('http://127.0.0.1:5000/get_data_to_visualize');
+  }
 }
