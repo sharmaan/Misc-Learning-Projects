@@ -25,6 +25,7 @@ export class StockInfoComponent implements OnInit, AfterViewInit {
     'marketCap',
     'sharesOutstanding',
     'totalRevenue',
+    'bookValue',
   ];
 
   dataSource!: MatTableDataSource<any>;

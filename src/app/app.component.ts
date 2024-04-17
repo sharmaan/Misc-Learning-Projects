@@ -12,7 +12,6 @@ import { StockPriceAllComponent } from './stock-price-all/stock-price-all.compon
 import { VisualComponent } from './visual/visual.component';
 import { BarComponent } from './bar/bar.component';
 import { PieComponent } from './pie/pie.component';
-import { ScatterComponent } from './scatter/scatter.component';
 
 @Component({
   selector: 'app-root',
@@ -141,8 +140,5 @@ export class AppComponent implements OnInit {
   }
   displayPieChart() {
     this._dialog.open(PieComponent);
-  }
-  displayScatterPlot() {
-    this._dialog.open(ScatterComponent);
   }
 }

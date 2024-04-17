@@ -1,3 +1,4 @@
+import time
 from datetime import datetime
 from operator import itemgetter
 
@@ -7,6 +8,7 @@ from yahooquery import Ticker
 import pandas as pd
 from flask import Flask, jsonify, request
 from flask_cors import CORS
+from sklearn.linear_model import LinearRegression
 
 '''
 keep for reference
@@ -138,6 +140,35 @@ def get_all_pricing_history():
     ]
     return jsonify(result)
 
+@app.route('/get_all_pricing_history/<string:symbol>')
+def get_all_pricing_history_by_symbol(symbol: str):
+    db = getDB()
+    '''
+    max high open, aggregate query , group by then combine with metadata , financial info, default stats for more data
+    '''
+    stock_history_data = [sh for sh in db["stock_history_data"].find({"symbol":symbol}, {"_id": 0}).sort(
+      {"High": -1, "Date": -1, "symbol": 1, "High": -1})]
+    #  db.stock_history_data.aggregate([{$group:{_id:"$symbol",maxOpenHigh:{$max:"$Open"},Date:{$max:"$Date"},Volume:{$max:"$Volume"}}}])
+    stock_metadata = [s for s in db["stock_metadata"].find({"symbol": symbol}, {"_id": 0})]
+    stock_financial_info = [s for s in db["stock_financial_info"].find({"symbol": symbol}, {"_id": 0})]
+    stock_default_key_stats = [s for s in db["stock_default_key_stats"].find({"symbol": symbol}, {"_id": 0})]
+    result = [
+      {"symbol": sm["symbol"], "companyName": sm["companyName"], "sector": sm["sector"], "industry": sm["industry"],
+       "country": sm["country"], "currency": sm["currency"]
+        , "marketCap": sf["marketCap"], "sharesOutstanding": sf["sharesOutstanding"],
+       "priceToBook": sd["priceToBook"]
+        , "Date": sh["Date"], "Open": sh["Open"], "High": sh["High"], "Low": sh["Low"], "Close": sh["Close"],
+       "Volume": sh["Volume"]
+       }
+      for sm in stock_metadata
+      for sf in stock_financial_info
+      for sd in stock_default_key_stats
+      for sh in stock_history_data
+      if sm["symbol"] == sf["symbol"] and sm["symbol"] == sd["symbol"] and sm["symbol"] == sh["symbol"]
+    ]
+    return jsonify(result)
+
+
 @app.route('/get_data_to_visualize')
 def getDataToDisplay():
   db=getDB()
@@ -150,7 +181,8 @@ def getDataToDisplay():
 def getDataToDisplay_Scatter():
   db=getDB()
   stock_history_data = [sh for sh in db["stock_history_data"].aggregate([{"$group": {"_id": "$symbol", "maxOpenHigh": {"$max": "$High"}}}])]
-  result = [{"symbol":d["_id"],"High":format(d["maxOpenHigh"],".2f") } for d in stock_history_data]
+  stock_history_data = [sh for sh in db["stock_history_data"].find({}, {"_id": 0}).sort( {"High": -1, "Date": -1, "symbol": 1, "High": -1})]
+  result = [{"symbol":d["symbol"],"price":format(d["High"],".2f"),"date":d["Date"] } for d in stock_history_data]
   return jsonify(result)
 
 
@@ -160,6 +192,25 @@ def get_data_by_trading_symbol(symbol: str):
     result = [item for item in items]
 
     return jsonify(result), 404
+
+@app.route('/get_predictions')
+def get_predictions():
+  # Fetch stock data
+  data = yf.download('AAPL', start='2010-01-01', end='2020-01-01')
+  data['Prev Close'] = data['Close'].shift(1)
+  data.dropna(inplace=True)
+
+  # Prepare data for prediction
+  X = data[['Prev Close']]
+  y = data['Close']
+  model = LinearRegression()
+  model.fit(X, y)
+
+  # Make a prediction for the next day
+  prediction = model.predict([[data.iloc[-1]['Close']]])
+
+  # Return the prediction
+  return jsonify({'prediction': prediction[0]})
 
 
 @app.route('/updateData/<string:symbol>', methods=['PUT'])

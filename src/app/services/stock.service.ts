@@ -38,4 +38,9 @@ export class StockService {
   getDataToVisualize(): Observable<any> {
     return this._http.get('http://127.0.0.1:5000/get_data_to_visualize');
   }
+  getDataToVisualize_scatter(): Observable<any> {
+    return this._http.get(
+      'http://127.0.0.1:5000/get_data_to_visualize_scatter'
+    );
+  }
 }
