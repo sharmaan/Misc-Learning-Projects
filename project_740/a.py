@@ -91,7 +91,8 @@ def get_pricing_history_highest_open():
     '''
     max high open, aggregate query , group by then combine with metadata , financial info, default stats for more data
     '''
-    stock_history_data =[sh for sh in db["stock_history_data"].aggregate([{"$group":{"_id":"$symbol","maxOpenHigh":{"$max":"$Open"},"Date":{"$max":"$Date"},"Volume":{"$max":"$Volume"}}}])]
+    # stock_history_data =[sh for sh in db["stock_history_data"].aggregate([{"$group":{"_id":"$symbol","maxOpenHigh":{"$max":"$Open"},"Date":{"$max":"$Date"},"Volume":{"$max":"$Volume"}}}])]
+    stock_history_data =[sh for sh in db["stock_history_data"].aggregate([{"$group":{"_id":"$symbol","maxOpenHigh":{"$max":"$High"}}}])]
     #  db.stock_history_data.aggregate([{$group:{_id:"$symbol",maxOpenHigh:{$max:"$Open"},Date:{$max:"$Date"},Volume:{$max:"$Volume"}}}])
     stock_metadata = [s for s in db["stock_metadata"].find({"symbol":{"$in":["GOOGL", "GOOG", "AMZN", "AAPL", "META", "MSFT", "NVDA", "TSLA"]}}, {"_id": 0})]
     stock_financial_info = [s for s in db["stock_financial_info"].find({"symbol":{"$in":["GOOGL", "GOOG", "AMZN", "AAPL", "META", "MSFT", "NVDA", "TSLA"]}}, {"_id": 0})]
@@ -101,7 +102,7 @@ def get_pricing_history_highest_open():
          "country": sm["country"], "currency": sm["currency"]
             , "marketCap": sf["marketCap"], "sharesOutstanding": sf["sharesOutstanding"],"totalRevenue":sf["totalRevenue"],
           "priceToBook": sd["priceToBook"]
-         ,"maxOpenHigh":sh["maxOpenHigh"],"maxOpenDate":sh["Date"],"maxOpenVolume":sh["Volume"]
+         ,"maxOpenHigh":sh["maxOpenHigh"]#,"maxOpenDate":sh["Date"]#,"maxOpenVolume":sh["Volume"]
          }
         for sm in stock_metadata
         for sf in stock_financial_info

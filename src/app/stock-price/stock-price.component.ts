@@ -15,7 +15,7 @@ export class StockPriceComponent implements OnInit, AfterViewInit {
     this.getData();
   }
   displayedColumns: string[] = [
-    'maxOpenDate', //stock_history
+    // 'maxOpenDate', //stock_history
     'symbol', //stock_metadata
     'companyName', //stock_metadata
     'maxOpenHigh', //stock_history
