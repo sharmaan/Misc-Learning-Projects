@@ -42,9 +42,6 @@ def index():
 @app.route('/getData')
 def get_data():
     db = getDB()
-    # stock_metadata = [s for s in db["stock_metadata"].find({}, {"_id": 0}).limit(50)]
-    # stock_financial_info = [s for s in db["stock_financial_info"].find({}, {"_id": 0}).limit(50)]
-    # stock_default_key_stats = [s for s in db["stock_default_key_stats"].find({}, {"_id": 0}).limit(50)]
     stock_metadata = [s for s in db["stock_metadata"].find({}, {"_id": 0})]
     stock_financial_info = [s for s in db["stock_financial_info"].find({}, {"_id": 0})]
     stock_default_key_stats = [s for s in db["stock_default_key_stats"].find({}, {"_id": 0})]
@@ -59,7 +56,6 @@ def get_data():
         for sm in stock_metadata
         for sf in stock_financial_info if sm["symbol"] == sf["symbol"]
         for sd in stock_default_key_stats if sm["symbol"] == sd["symbol"]
-        # if sm["symbol"] == sf["symbol"] and sm["symbol"] == sd["symbol"]
     ]
 
     return jsonify(result)

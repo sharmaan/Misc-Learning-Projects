@@ -21,7 +21,7 @@ def predict_next_closing_price_symbol():
   X = data[['Prev Close']]
   y = data['Close']
   data.sort_index(inplace=True)
-  # print(data[['Close', 'Prev Close']].head())
+
   # Split the data into train and test sets
   X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
   # Model training using LinearRegression
@@ -31,7 +31,12 @@ def predict_next_closing_price_symbol():
   predictions = model.predict(X_test)
   predictions = pd.Series(predictions, index=X_test.index)  # Convert predictions to a pandas Series with proper index
   # Calculate the RMSE
+  '''
+  The root-mean-square deviation (RMSD) or root-mean-square error (RMSE)
+  is one of frequently used measures of the differences between true or predicted values on the one hand and observed values or an estimator on the other.
+  '''
   rmse = np.sqrt(mean_squared_error(y_test, predictions))
+
   print("Root Mean Squared Error:", rmse)
   # Create a DataFrame for plotting to handle indices seamlessly
   results = pd.DataFrame({
